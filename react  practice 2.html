@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Management UI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px;
+    }
+    .container {
+      width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1e40af;
+    }
+    .book-list {
+      margin-top: 20px;
+    }
+    .book-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: #f9fafb;
+      border-radius: 6px;
+    }
+    .remove-btn {
+      background: #dc2626;
+      border: none;
+      padding: 4px 8px;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .remove-btn:hover {
+      background: #991b1b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Library Management</h2>
+
+    <!-- Search -->
+    <input type="text" id="searchInput" placeholder="Search by title or author">
+
+    <!-- Add Book Form -->
+    <input type="text" id="titleInput" placeholder="Enter Book Title">
+    <input type="text" id="authorInput" placeholder="Enter Author Name">
+    <button onclick="addBook()">Add Book</button>
+
+    <!-- Book List -->
+    <div class="book-list" id="bookList"></div>
+  </div>
+
+  <script>
+    let books = [
+      { title: "The Alchemist", author: "Paulo Coelho" },
+      { title: "To Kill a Mockingbird", author: "Harper Lee" },
+      { title: "1984", author: "George Orwell" }
+    ];
+
+    function renderBooks(filter = "") {
+      const list = document.getElementById("bookList");
+      list.innerHTML = "";
+
+      books
+        .filter(book => 
+          book.title.toLowerCase().includes(filter.toLowerCase()) ||
+          book.author.toLowerCase().includes(filter.toLowerCase())
+        )
+        .forEach((book, index) => {
+          const item = document.createElement("div");
+          item.className = "book-item";
+          item.innerHTML = `
+            <span><strong>${book.title}</strong> by ${book.author}</span>
+            <button class="remove-btn" onclick="removeBook(${index})">Remove</button>
+          `;
+          list.appendChild(item);
+        });
+    }
+
+    function addBook() {
+      const title = document.getElementById("titleInput").value.trim();
+      const author = document.getElementById("authorInput").value.trim();
+
+      if (title && author) {
+        books.push({ title, author });
+        document.getElementById("titleInput").value = "";
+        document.getElementById("authorInput").value = "";
+        renderBooks();
+      } else {
+        alert("Please enter both title and author.");
+      }
+    }
+
+    function removeBook(index) {
+      books.splice(index, 1);
+      renderBooks(document.getElementById("searchInput").value);
+    }
+
+    // Search functionality
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      renderBooks(e.target.value);
+    });
+
+    // Initial render
+    renderBooks();
+  </script>
+
+</body>
+</html>
